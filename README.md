@@ -18,5 +18,6 @@ to run this project use this link https://test-table-three.vercel.app/
 to run localy:
 
 ```
+npm install
 npm run start
 ```
