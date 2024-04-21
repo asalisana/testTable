@@ -13,3 +13,10 @@ React-query
 Material-react-table
 Mui
 
+to run this project use this link https://test-table-three.vercel.app/
+
+to run localy:
+
+```
+npm run start
+```
