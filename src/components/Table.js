@@ -22,10 +22,16 @@ import useCreateUser from "../hooks/useCreateUser";
 import useGetUsers from "../hooks/useGetUsers";
 import useUpdateUser from "../hooks/useUpdateUser";
 import {validateUser} from "../utils/validation";
+import Form from "../utils/Form";
 
 const Table = () => {
 
     const [validationErrors, setValidationErrors] = useState({});
+    const [isFormVisible, setIsFormVisible] = useState(false);
+
+    const toggleFormVisibility = () => {
+        setIsFormVisible((prevIsFormVisible) => !prevIsFormVisible);
+    };
 
     const columns = useMemo(
         () => [
@@ -187,7 +193,6 @@ const Table = () => {
 
     //UPDATE action
     const handleSaveUser = async ({ values, table }) => {
-        console.log(values)
         const newValidationErrors = validateUser(values);
         if (Object.values(newValidationErrors).some((error) => error)) {
             setValidationErrors(newValidationErrors);
@@ -228,7 +233,21 @@ const Table = () => {
                 <DialogContent
                     sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
                 >
-                    {internalEditComponents} {/* or render custom edit components here */}
+                    {/*<Form/>*/}
+                    {internalEditComponents}
+                </DialogContent>
+                <DialogActions>
+                    <MRT_EditActionButtons variant="Редактировать" table={table} row={row} />
+                </DialogActions>
+            </>
+        ),
+        muiCreateRowModalProps: ({ table, row, internalEditComponents }) => (
+            <>
+                <DialogTitle variant="h3">Посмотреть</DialogTitle>
+                <DialogContent
+                    sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                >
+                    <Form/>
                 </DialogContent>
                 <DialogActions>
                     <MRT_EditActionButtons variant="Редактировать" table={table} row={row} />
@@ -258,21 +277,30 @@ const Table = () => {
                 </Tooltip>
             </Box>
         ),
+
         renderTopToolbarCustomActions: ({ table }) => (
-            <Button
-                variant="contained"
-                onClick={() => {
-                    table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-                    //or you can pass in a row object to set default values with the `createRow` helper function
-                    // table.setCreatingRow(
-                    //   createRow(table, {
-                    //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-                    //   }),
-                    // );
-                }}
-            >
-                СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ
-            </Button>
+            <>
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        table.setCreatingRow(true); //simplest way to open the create row modal with no default values
+                        //or you can pass in a row object to set default values with the `createRow` helper function
+                        // table.setCreatingRow(
+                        //   createRow(table, {
+                        //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
+                        //   }),
+                        // );
+                    }}
+                >
+                    СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ
+                </Button>
+                <Button variant="contained" onClick={toggleFormVisibility}>
+                    ПОСМОТРЕТЬ
+                </Button>
+                <Form isOpen={isFormVisible} onClose={toggleFormVisibility} />
+            </>
+
+
         ),
         state: {
             isLoading: isLoadingUsers,
